@@ -26,9 +26,8 @@ contract Kontract {
     kontractsByAddress[_contractors[0]].push(kontractId);
   }
 
-  function getContract(uint id) returns (address creator, string content, string status, address[] contractors, address[] judges) {
-    var kontract = kontracts[id];
-    return (kontract.creator, kontract.content, kontract.status, kontract.contractors, kontract.judges);
+  function getContract(uint idx) returns (string) {
+    return kontractToJson(idx);
   }
 
   function getMyContractsLength() returns (uint) {
@@ -48,9 +47,10 @@ contract Kontract {
 
   function kontractToJson(uint idx) returns(string){
     var kontract = kontracts[idx];
-    string memory outJson = strConcat(outJson, '{id: "', uintToString(idx), '", ');
-    outJson = strConcat(outJson, 'content: "', kontract.content, '", ');
-    outJson = strConcat(outJson, 'status: "', kontract.status, '"},');
+    string memory outJson = strConcat(outJson, '{"id": "', uintToString(idx), '", ');
+    outJson = strConcat(outJson, '"creator": "', addressToString(kontract.creator), '", ');
+    outJson = strConcat(outJson, '"content": "', kontract.content, '", ');
+    outJson = strConcat(outJson, '"status": "', kontract.status, '"}');
     return outJson;
   }
 
@@ -89,6 +89,23 @@ contract Kontract {
 
   function uintToString(uint v) constant returns (string ret) {
     return bytes32ToString(uintToBytes(v));
+  }
+
+  function char(byte b) returns (byte c) {
+      if (b < 10) return byte(uint8(b) + 0x30);
+      else return byte(uint8(b) + 0x57);
+  }
+
+  function addressToString(address x) returns (string) {
+    bytes memory s = new bytes(40);
+    for (uint i = 0; i < 20; i++) {
+        byte b = byte(uint8(uint(x) / (2**(8*(19 - i)))));
+        byte hi = byte(uint8(b) / 16);
+        byte lo = byte(uint8(b) - 16 * uint8(hi));
+        s[2*i] = char(hi);
+        s[2*i+1] = char(lo);
+    }
+    return strConcat("0x", string(s));
   }
 
   function strConcat(string _a, string _b, string _c, string _d, string _e) internal returns (string){
