@@ -67,7 +67,8 @@ contract Kontract {
     string memory outJson = strConcat(outJson, '{"id": "', uintToString(idx), '", ');
     outJson = strConcat(outJson, '"creator": "', addressToString(kontract.creator), '", ');
     outJson = strConcat(outJson, '"content": "', kontract.content, '", ');
-    outJson = strConcat(outJson, '"status": "', kontract.status, '"}');
+    outJson = strConcat(outJson, '"status": "', kontract.status, '",');
+    outJson = strConcat(outJson, '"contractors": ', addressArrayToJson(kontract.contractors), '}');
     return outJson;
   }
 
@@ -127,6 +128,17 @@ contract Kontract {
         s[2*i+1] = char(lo);
     }
     return strConcat("0x", string(s));
+  }
+
+  function addressArrayToJson(address[] arr) returns (string) {
+    string memory outJson = "[";
+    for (uint i=0 ; i < arr.length -1 ; i++) {
+      address x = arr[i];
+      outJson = strConcat(outJson, '"', addressToString(x), '", ');
+    }
+    address last_x = arr[arr.length -1];
+    outJson = strConcat(outJson, '"', addressToString(x), '"]');
+    return outJson;
   }
 
   function strConcat(string _a, string _b, string _c, string _d, string _e) internal returns (string){

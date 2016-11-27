@@ -23,6 +23,7 @@ contract('Kontract', function(accounts) {
         return meta.getContract.call(0);
       })
       .then(function (res) {
+        console.log("getContract: " + res);
         var resObj = JSON.parse(res);
 
         assert.equal(resObj.creator, expected_creator, "creator is invalid");
