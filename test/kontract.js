@@ -5,6 +5,8 @@ contract('Kontract', function(accounts) {
     var expected_creator = accounts[1];  // truffle test use first user as a sender
     var expected_content = "test content";
     var expected_status = "DRAFT";
+    var expected_ongoing_status = "ONGOING";
+    var expected_completed_status = "COMPLETED";
     var expected_contractors = [accounts[0], accounts[1], accounts[2]];
     var expected_judgements = {};
     expected_judgements[accounts[0]] = "EMPTY";
@@ -15,6 +17,11 @@ contract('Kontract', function(accounts) {
     expect_accepted_judements[accounts[0]] = "ACCEPT";
     expect_accepted_judements[accounts[1]] = "ACCEPT";
     expect_accepted_judements[accounts[2]] = "ACCEPT";
+
+    var expect_approved_judements = {};
+    expect_approved_judements[accounts[0]] = "APPROVE";
+    expect_approved_judements[accounts[1]] = "APPROVE";
+    expect_approved_judements[accounts[2]] = "APPROVE";
 
     var expected_0contacts = 0;
     var expected_3contacts = 0;
@@ -75,7 +82,24 @@ contract('Kontract', function(accounts) {
         var resObj = JSON.parse(res);
         console.log("Contect of new contract is ")
         console.log(resObj);
-        assert.deepEqual(resObj.judgements, expect_accepted_judements, "judements approved.")
+        assert.deepEqual(resObj.judgements, expect_accepted_judements, "judements accepted.")
+        assert.equal(resObj.status, expected_ongoing_status, "status is invalid");
+        return meta.approve(lastest_created_kontract_id, {from: accounts[0]});
+      })
+      .then(function (res) {
+        return meta.approve(lastest_created_kontract_id, {from: accounts[1]});
+      })
+      .then(function (res) {
+        return meta.approve(lastest_created_kontract_id, {from: accounts[2]});
+      })
+      .then(function (res) {
+        return meta.getContract.call(lastest_created_kontract_id, {from: accounts[0]});
+      })
+      .then(function (res) {
+        var resObj = JSON.parse(res);
+
+        assert.deepEqual(resObj.judgements, expect_approved_judements, "judements approved.")
+        assert.equal(resObj.status, expected_completed_status, "status is invalid");
       })
   });
 });
