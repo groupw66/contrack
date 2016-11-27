@@ -32,6 +32,7 @@ contract Kontract {
   function accept(uint idx) {
     if (isStringsEqual(kontracts[idx].judgements[msg.sender], "EMPTY")) {
       kontracts[idx].judgements[msg.sender] = "ACCEPT";
+      /* TODO check if all judges already accept*/
     }
   }
 
