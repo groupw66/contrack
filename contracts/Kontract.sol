@@ -29,6 +29,14 @@ contract Kontract {
     kontracts[kontractId].judgements[msg.sender] = "ACCEPT";
   }
 
+  function accept(uint idx) {
+    kontracts[idx].judgements[msg.sender] = "ACCEPT";
+  }
+
+  function reject(uint idx) {
+    kontracts[idx].judgements[msg.sender] = "REJECT";
+  }
+
   function getContract(uint idx) returns (string) {
     return kontractToJson(idx);
   }
