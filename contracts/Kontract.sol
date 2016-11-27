@@ -35,6 +35,7 @@ contract Kontract {
 
   function reject(uint idx) {
     kontracts[idx].judgements[msg.sender] = "REJECT";
+    kontracts[idx].status = "VOIDED";
   }
 
   function getContract(uint idx) returns (string) {
