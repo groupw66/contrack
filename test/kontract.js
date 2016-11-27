@@ -1,5 +1,5 @@
 contract('Kontract', function(accounts) {
-  it("should create new contract", function() {
+  it("should run complete flow successfully", function() {
     var meta = Kontract.deployed();
 
     var expected_creator = accounts[1];  // truffle test use first user as a sender
@@ -11,18 +11,25 @@ contract('Kontract', function(accounts) {
     expected_judgements[accounts[1]] = "ACCEPT";
     expected_judgements[accounts[2]] = "EMPTY";
 
-    var expectedMyContractsLength = 0;
+    var expected_0contacts = 0;
+    var expected_3contacts = 0;
 
-    return meta.getMyContractsLength.call({from: accounts[0]})
+    return meta.getMyContracts.call({from: accounts[0], gas: 300000})
       .then(function (res) {
-        expectedMyContractsLength = parseInt(res);
+        expected_0contacts = JSON.parse(res);
+        return meta.getMyContracts.call({from: accounts[3]});
+      })
+      .then(function (res) {
+        expected_3contacts = JSON.parse(res);
         return meta.createContract(expected_content, expected_contractors, {from: expected_creator});
       })
-      .then(function (tx_id) {
-        return meta.getMyContractsLength.call({from: accounts[0]});
+      .then(function (res) {
+        return meta.getMyContracts.call({from: accounts[0]});
       })
       .then(function (res) {
-        assert.equal(res, expectedMyContractsLength + 1, "myContractsLength is invalid");
+        var resObj = JSON.parse(res);
+        assert.equal(resObj.length, expected_0contacts.length + 1, "contact of 0 is invalid");
+        expected_0contacts = resObj;
         return meta.getMyContracts.call({from: accounts[0]});
       })
       .then(function (res) {
@@ -39,7 +46,12 @@ contract('Kontract', function(accounts) {
         assert.equal(resObj.status, expected_status, "status is invalid");
         assert.deepEqual(resObj.contractors, expected_contractors, "contractors is invalid");
         assert.deepEqual(resObj.judgements, expected_judgements, "judgements is invalid");
-        
+
+        return meta.getMyContracts.call({from: accounts[3]});
       })
+      .then(function (res) {
+        var resArr = JSON.parse(res);
+        assert.deepEqual(resArr, expected_3contacts, "contacts of other account is changing");
+      });
   });
 });
