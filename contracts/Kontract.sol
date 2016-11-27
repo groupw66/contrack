@@ -93,9 +93,9 @@ contract Kontract {
         }
       }
       if (sue_counter >= approve_counter) {
-        kontracts[idx].status = "COMPLETED";
-      } else {
         kontracts[idx].status = "SUED";
+      } else {
+        kontracts[idx].status = "COMPLETED";
       }
     }
   }
