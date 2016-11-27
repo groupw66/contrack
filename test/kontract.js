@@ -11,8 +11,15 @@ contract('Kontract', function(accounts) {
     expected_judgements[accounts[1]] = "ACCEPT";
     expected_judgements[accounts[2]] = "EMPTY";
 
+    var expect_accepted_judements = {};
+    expect_accepted_judements[accounts[0]] = "ACCEPT";
+    expect_accepted_judements[accounts[1]] = "ACCEPT";
+    expect_accepted_judements[accounts[2]] = "ACCEPT";
+
     var expected_0contacts = 0;
     var expected_3contacts = 0;
+
+    var lastest_created_kontract_id;
 
     return meta.getMyContracts.call({from: accounts[0], gas: 300000})
       .then(function (res) {
@@ -35,8 +42,8 @@ contract('Kontract', function(accounts) {
       .then(function (res) {
         var resArr = JSON.parse(res);
         var recentContract = resArr[resArr.length - 1];
-        var recentContractId = recentContract.id;
-        return meta.getContract.call(recentContractId, {from: accounts[0]});
+        lastest_created_kontract_id = parseInt(recentContract.id);
+        return meta.getContract.call(lastest_created_kontract_id, {from: accounts[0]});
       })
       .then(function (res) {
         var resObj = JSON.parse(res);
@@ -52,6 +59,20 @@ contract('Kontract', function(accounts) {
       .then(function (res) {
         var resArr = JSON.parse(res);
         assert.deepEqual(resArr, expected_3contacts, "contacts of other account is changing");
-      });
+        return meta.accept(lastest_created_kontract_id, {from: accounts[0]});
+      })
+      .then(function (res) {
+        // Do nothing
+        return meta.accept(lastest_created_kontract_id, {from: accounts[2]});
+      })
+      .then(function (res) {
+        return meta.getContract.call(lastest_created_kontract_id, {from: accounts[0]});
+      })
+      .then(function (res) {
+        var resObj = JSON.parse(res);
+
+        assert.deepEqual(resObj.judgements, expect_accepted_judements, "judements approved.")
+        
+      })
   });
 });
