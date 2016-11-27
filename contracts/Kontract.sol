@@ -6,24 +6,27 @@ contract Kontract {
     string content;
     string status;
     address[] contractors;
-    address[] judges;
+    mapping(address => string) judgements;
   }
 
   Kontract[] kontracts;
 
   mapping(address => uint[]) kontractsByAddress;
 
-  function createContract(string _content, address[] _contractors, address[] _judges) returns (uint){
+  function createContract(string _content, address[] _contractors) returns (uint){
     var kontract = Kontract({
         creator: msg.sender,
         content: _content,
         status: "DRAFT",
-        contractors: _contractors,
-        judges: _judges
+        contractors: _contractors
       });
     kontracts.push(kontract);
     uint kontractId = kontracts.length - 1;
-    kontractsByAddress[_contractors[0]].push(kontractId);
+    for (uint i=0 ; i < _contractors.length ; i++) {
+      kontracts[kontractId].judgements[_contractors[i]] = "EMPTY";
+      kontractsByAddress[_contractors[i]].push(kontractId);
+    }
+    kontracts[kontractId].judgements[msg.sender] = "ACCEPT";
   }
 
   function getContract(uint idx) returns (string) {
