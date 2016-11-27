@@ -71,11 +71,11 @@ contract('Kontract', function(accounts) {
         return meta.accept(lastest_created_kontract_id, {from: accounts[0]});
       })
       .then(function (res) {
-        console.log("Account2 sign the contact.");
+        console.log("Account2 signed the contact.");
         return meta.accept(lastest_created_kontract_id, {from: accounts[2]});
       })
       .then(function (res) {
-        console.log("Account0 sign the contact.");
+        console.log("Account0 signed the contact.");
         return meta.getContract.call(lastest_created_kontract_id, {from: accounts[0]});
       })
       .then(function (res) {
@@ -87,17 +87,21 @@ contract('Kontract', function(accounts) {
         return meta.approve(lastest_created_kontract_id, {from: accounts[0]});
       })
       .then(function (res) {
+        console.log("Account0 approved the contact.");
         return meta.approve(lastest_created_kontract_id, {from: accounts[1]});
       })
       .then(function (res) {
+        console.log("Account1 approved the contact.");
         return meta.approve(lastest_created_kontract_id, {from: accounts[2]});
       })
       .then(function (res) {
+        console.log("Account2 approved the contact.");
         return meta.getContract.call(lastest_created_kontract_id, {from: accounts[0]});
       })
       .then(function (res) {
         var resObj = JSON.parse(res);
-
+        console.log("Contect of new contract is ")
+        console.log(resObj);
         assert.deepEqual(resObj.judgements, expect_approved_judements, "judements approved.")
         assert.equal(resObj.status, expected_completed_status, "status is invalid");
       })
