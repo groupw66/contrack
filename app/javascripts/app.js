@@ -1,39 +1,41 @@
 var accounts;
 var account;
 
-function setStatus(message) {
-  var status = document.getElementById("status");
-  status.innerHTML = message;
-};
+function createContract() {
+  var meta = Kontract.deployed();
+  console.log(meta.address);
+  var fromWallet = $("#walletSelect").val();
+  console.log("selected wallet: " + $("#walletSelect").val());
+  var contractors = JSON.parse($("#contractors").val());
+  for (var i = 0; i < contractors.length; i++) {
+    console.log("contractor" + i + ": " + contractors[i]);
+  }
+  var content = $("#content").val();
 
-function refreshBalance() {
-  var meta = MetaCoin.deployed();
-
-  meta.getBalance.call(account, {from: account}).then(function(value) {
-    var balance_element = document.getElementById("balance");
-    balance_element.innerHTML = value.valueOf();
-  }).catch(function(e) {
-    console.log(e);
-    setStatus("Error getting balance; see log.");
+  meta.createContract(content, contractors, {from: fromWallet, gas: 300000})
+  .then(function(value) {
+    return meta.getMyContractsLength.call();
+  })
+  .then(function(res) {
+    var contractsLength = parseInt(res);
+    console.log(contractsLength);
+    if (contractsLength > 0) {
+      meta.getContract.call(contractsLength - 1).then(function(res){
+        console.log(res);
+      });
+    }
   });
 };
 
-function sendCoin() {
-  var meta = MetaCoin.deployed();
-
-  var amount = parseInt(document.getElementById("amount").value);
-  var receiver = document.getElementById("receiver").value;
-
-  setStatus("Initiating transaction... (please wait)");
-
-  meta.sendCoin(receiver, amount, {from: account}).then(function() {
-    setStatus("Transaction complete!");
-    refreshBalance();
-  }).catch(function(e) {
-    console.log(e);
-    setStatus("Error sending coin; see log.");
-  });
-};
+function generateWalletDropdownList() {
+  for (var i=0; i < accounts.length; i++) {
+    if (i == 0) {
+      $("select").append('<option value="' + accounts[i] + '" selected>' + accounts[i] + '</option>');
+    } else {
+      $("select").append('<option value="' + accounts[i] + '">' + accounts[i] + '</option>');
+    }
+  }
+}
 
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
@@ -49,7 +51,7 @@ window.onload = function() {
 
     accounts = accs;
     account = accounts[0];
-
-    refreshBalance();
+    console.log(account);
+    generateWalletDropdownList();
   });
 }
