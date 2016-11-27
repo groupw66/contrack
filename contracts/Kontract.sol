@@ -32,7 +32,71 @@ contract Kontract {
   function accept(uint idx) {
     if (isStringsEqual(kontracts[idx].judgements[msg.sender], "EMPTY")) {
       kontracts[idx].judgements[msg.sender] = "ACCEPT";
-      /* TODO check if all judges already accept*/
+      var all_accept = true;
+      for (var i=0; i < kontracts[idx].contractors.length; i++) {
+        if (isStringsNotEqual(kontracts[idx].judgements[kontracts[idx].contractors[i]],"ACCEPT")) {
+          all_accept = false;
+          break;
+        }
+      }
+      if (all_accept) {
+        kontracts[idx].status = "ONGOING";
+      }
+    }
+  }
+
+  function approve(uint idx) {
+    if (isStringsEqual(kontracts[idx].status, "ONGOING")) {
+      kontracts[idx].judgements[msg.sender] = "APPROVE";
+      var all_response = true;
+      for (var i=0; i < kontracts[idx].contractors.length; i++) {
+        if (isStringsEqual(kontracts[idx].judgements[kontracts[idx].contractors[i]],"ACCEPT")) {
+          all_response = false;
+          break;
+        }
+      }
+      if (all_response) {
+        summarize(idx);
+      }
+    }
+  }
+
+  function sue(uint idx, address[] suers) {
+    if (isStringsEqual(kontracts[idx].status, "ONGOING")) {
+      string memory target = "";
+      for (var i=0; i < suers.length; i++) {
+        target = strConcat(target, addressToString(suers[i]));
+      }
+      kontracts[idx].judgements[msg.sender] = strConcat("SUE:", target);
+      var all_response = true;
+      for (i=0; i < kontracts[idx].contractors.length; i++) {
+        if (isStringsEqual(kontracts[idx].judgements[kontracts[idx].contractors[i]],"ACCEPT")) {
+          all_response = false;
+          break;
+        }
+      }
+      if (all_response) {
+        summarize(idx);
+      }
+    }
+  }
+
+  function summarize(uint idx) {
+    if (isStringsEqual(kontracts[idx].status, "ONGOING")) {
+      uint approve_counter = 0;
+      uint sue_counter= 0;
+      for (var i=0; i < kontracts[idx].contractors.length; i++) {
+        if (isStringsEqual(kontracts[idx].judgements[kontracts[idx].contractors[i]],"APPROVE")) {
+          approve_counter += 1;
+        } else {
+          sue_counter += 1;
+        }
+      }
+      if (sue_counter >= approve_counter) {
+        kontracts[idx].status = "COMPLETED";
+      } else {
+        kontracts[idx].status = "SUED";
+      }
     }
   }
 
@@ -92,6 +156,10 @@ contract Kontract {
 
   function isStringsEqual(string x, string y) returns (bool) {
     return sha3(x) == sha3(y) ? true : false;
+  }
+
+  function isStringsNotEqual(string x, string y) returns (bool) {
+    return !isStringsEqual(x, y);
   }
 
   function uintToBytes(uint v) constant returns (bytes32 ret) {
