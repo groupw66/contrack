@@ -37,6 +37,16 @@ function generateWalletDropdownList() {
   }
 }
 
+function updateDetail() {
+  var meta = Kontract.deployed();
+  var fromWallet = $("#walletSelect").val();
+  console.log("selected wallet: " + $("#walletSelect").val());
+  meta.getMyContracts.call({from: fromWallet, gas: 30000})
+  .then(function(value) {
+    console.log(value);
+  });
+}
+
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {

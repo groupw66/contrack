@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contrack</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href="./app.css" rel='stylesheet' type='text/css'>
+  <script src="./app.js"></script>
+  <script src="./jquery.js"></script>
+</head>
+<body>
+  <div class="header clearfix">
+    <nav>
+      <ul class="nav nav-pills pull-right">
+        <li role="presentation"><a href="/index.html">Home</a></li>
+        <li role="presentation" class="active"><a href="#">Detail</a></li>
+      </ul>
+    </nav>
+  </div>
+  <h1>Contrack</h1>
+  <br>
+  <h2>Choose wallet</h2>
+  <select name="wallet" id="walletSelect"></select><br>
+  <button onclick="updateDetail()">get detail</button>
+  <br>
+  <h2>Details</h2>
+  <div id="detail"></div>
+</body>
+</html>
