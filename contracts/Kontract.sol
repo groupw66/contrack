@@ -30,12 +30,16 @@ contract Kontract {
   }
 
   function accept(uint idx) {
-    kontracts[idx].judgements[msg.sender] = "ACCEPT";
+    if (isStringsEqual(kontracts[idx].judgements[msg.sender], "EMPTY")) {
+      kontracts[idx].judgements[msg.sender] = "ACCEPT";
+    }
   }
 
   function reject(uint idx) {
-    kontracts[idx].judgements[msg.sender] = "REJECT";
-    kontracts[idx].status = "VOIDED";
+    if (isStringsEqual(kontracts[idx].judgements[msg.sender], "EMPTY")) {
+      kontracts[idx].judgements[msg.sender] = "REJECT";
+      kontracts[idx].status = "VOIDED";
+    }
   }
 
   function getContract(uint idx) returns (string) {
@@ -67,6 +71,10 @@ contract Kontract {
   }
 
   /* UTILITIES */
+
+  function isStringsEqual(string x, string y) returns (bool) {
+    return sha3(x) == sha3(y) ? true : false;
+  }
 
   function uintToBytes(uint v) constant returns (bytes32 ret) {
     if (v == 0) {
