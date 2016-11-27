@@ -104,6 +104,26 @@ contract('Kontract', function(accounts) {
         console.log(resObj);
         assert.deepEqual(resObj.judgements, expect_approved_judements, "judements approved.")
         assert.equal(resObj.status, expected_completed_status, "status is invalid");
+        return meta.sue(lastest_created_kontract_id, [accounts[1]], {from: accounts[2]});
+      })
+      .then(function (res) {
+        console.log("Account2 sue Account1.");
+        return meta.getContract.call(lastest_created_kontract_id, {from: accounts[0]});
+      })
+      .then(function (res) {
+        var resObj = JSON.parse(res);
+        console.log("Contect of new contract is ")
+        console.log(resObj);
+        return meta.sue(lastest_created_kontract_id, [accounts[1]], {from: accounts[0]});
+      })
+      .then(function (res) {
+        console.log("Account0 sue Account1.");
+        return meta.getContract.call(lastest_created_kontract_id, {from: accounts[0]});
+      })
+      .then(function (res) {
+        var resObj = JSON.parse(res);
+        console.log("Contect of new contract is ")
+        console.log(resObj);
       })
   });
 });
