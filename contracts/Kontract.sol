@@ -46,7 +46,8 @@ contract Kontract {
   }
 
   function approve(uint idx) {
-    if (isStringsEqual(kontracts[idx].status, "ONGOING")) {
+    if (isStringsEqual(kontracts[idx].status, "ONGOING") ||
+        isStringsEqual(kontracts[idx].status, "COMPLETED")) {
       kontracts[idx].judgements[msg.sender] = "APPROVE";
       var all_response = true;
       for (var i=0; i < kontracts[idx].contractors.length; i++) {
@@ -62,7 +63,8 @@ contract Kontract {
   }
 
   function sue(uint idx, address[] suers) {
-    if (isStringsEqual(kontracts[idx].status, "ONGOING")) {
+    if (isStringsEqual(kontracts[idx].status, "ONGOING") ||
+        isStringsEqual(kontracts[idx].status, "COMPLETED")) {
       string memory target = "";
       for (var i=0; i < suers.length; i++) {
         target = strConcat(target, addressToString(suers[i]));
@@ -93,9 +95,9 @@ contract Kontract {
         }
       }
       if (sue_counter >= approve_counter) {
-        kontracts[idx].status = "COMPLETED";
-      } else {
         kontracts[idx].status = "SUED";
+      } else {
+        kontracts[idx].status = "COMPLETED";
       }
     }
   }
