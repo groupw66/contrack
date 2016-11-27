@@ -68,7 +68,23 @@ contract Kontract {
     outJson = strConcat(outJson, '"creator": "', addressToString(kontract.creator), '", ');
     outJson = strConcat(outJson, '"content": "', kontract.content, '", ');
     outJson = strConcat(outJson, '"status": "', kontract.status, '",');
-    outJson = strConcat(outJson, '"contractors": ', addressArrayToJson(kontract.contractors), '}');
+    outJson = strConcat(outJson, '"contractors": ', addressArrayToJson(kontract.contractors), ',');
+    outJson = strConcat(outJson, '"judgements": ', judgementsToJson(idx), '}');
+    return outJson;
+  }
+
+  function judgementsToJson(uint idx) returns(string) {
+    var kontract = kontracts[idx];
+    mapping(address => string) judgements = kontracts[idx].judgements;
+    string memory outJson = "{";
+    for (var i=0; i < kontracts[idx].contractors.length - 1; i++) {
+      address contractor = kontracts[idx].contractors[i];
+      outJson = strConcat(outJson, '"', addressToString(contractor), '": ');
+      outJson = strConcat(outJson, '"', judgements[contractor], '", ');
+    }
+    address lastContractor = kontracts[idx].contractors[kontracts[idx].contractors.length - 1];
+    outJson = strConcat(outJson, '"', addressToString(lastContractor), '": ');
+    outJson = strConcat(outJson, '"', judgements[lastContractor], '"}');
     return outJson;
   }
 
