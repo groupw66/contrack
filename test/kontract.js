@@ -24,30 +24,31 @@ contract('Kontract', function(accounts) {
     return meta.getMyContracts.call({from: accounts[0], gas: 300000})
       .then(function (res) {
         expected_0contacts = JSON.parse(res);
+        console.log("Account0 have " + expected_0contacts.length + " contacts.");
         return meta.getMyContracts.call({from: accounts[3]});
       })
       .then(function (res) {
         expected_3contacts = JSON.parse(res);
+        console.log("Account3 have " + expected_3contacts.length + " contacts.");
         return meta.createContract(expected_content, expected_contractors, {from: expected_creator});
       })
       .then(function (res) {
+        console.log("Account1 create new contact which have Account0, Account1, Account2 as contractors.");
         return meta.getMyContracts.call({from: accounts[0]});
       })
       .then(function (res) {
         var resObj = JSON.parse(res);
         assert.equal(resObj.length, expected_0contacts.length + 1, "contact of 0 is invalid");
         expected_0contacts = resObj;
-        return meta.getMyContracts.call({from: accounts[0]});
-      })
-      .then(function (res) {
-        var resArr = JSON.parse(res);
-        var recentContract = resArr[resArr.length - 1];
+        console.log("Account0 have " + expected_0contacts.length + " contacts.");
+        var recentContract = expected_0contacts[expected_0contacts.length - 1];
         lastest_created_kontract_id = parseInt(recentContract.id);
         return meta.getContract.call(lastest_created_kontract_id, {from: accounts[0]});
       })
       .then(function (res) {
         var resObj = JSON.parse(res);
-
+        console.log("Contect of new contract is ")
+        console.log(resObj);
         assert.equal(resObj.creator, expected_creator, "creator is invalid");
         assert.equal(resObj.content, expected_content, "content is invalid");
         assert.equal(resObj.status, expected_status, "status is invalid");
@@ -58,21 +59,23 @@ contract('Kontract', function(accounts) {
       })
       .then(function (res) {
         var resArr = JSON.parse(res);
+        console.log("Account3 have " + resArr.length + " contacts.");
         assert.deepEqual(resArr, expected_3contacts, "contacts of other account is changing");
         return meta.accept(lastest_created_kontract_id, {from: accounts[0]});
       })
       .then(function (res) {
-        // Do nothing
+        console.log("Account2 sign the contact.");
         return meta.accept(lastest_created_kontract_id, {from: accounts[2]});
       })
       .then(function (res) {
+        console.log("Account0 sign the contact.");
         return meta.getContract.call(lastest_created_kontract_id, {from: accounts[0]});
       })
       .then(function (res) {
         var resObj = JSON.parse(res);
-
+        console.log("Contect of new contract is ")
+        console.log(resObj);
         assert.deepEqual(resObj.judgements, expect_accepted_judements, "judements approved.")
-        
       })
   });
 });
