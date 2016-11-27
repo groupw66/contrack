@@ -8,24 +8,27 @@
   <script src="./jquery.js"></script>
 </head>
 <body>
-  <div class="header clearfix">
-    <nav>
-      <ul class="nav nav-pills pull-right">
-        <li role="presentation" class="active"><a href="#">Home</a></li>
-        <li role="presentation"><a href="/contracklist.html">Detail</a></li>
-      </ul>
-    </nav>
+  <div class="container">
+    <div class="header clearfix">
+      <nav>
+        <ul class="nav nav-pills pull-right">
+          <li role="presentation" class="active"><a href="#">Home</a></li>
+          <li role="presentation"><a href="/contracklist.html">Detail</a></li>
+        </ul>
+      </nav>
+    </div>
+    <h1>Contrack</h1>
+    <br>
+    <h2>Choose wallet</h2>
+    <br><select name="wallet" id="walletSelect"></select><br>
+    <h2>Send</h2>
+    <br><label for="content">Content:</label>
+    <div><textarea placeholder="content..." id="content"></textarea></div>
+    <br><label for="contractors">Contractors:</label>
+    <br><input type="text" id="contractors" placeholder='["0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"]'></input>
+    <br><br><button id="send" onclick="createContract()">Create Contract</button>
+    <br><br>
+    <span id="status"></span>
   </div>
-  <h1>Contrack</h1>
-  <br>
-  <h2>Choose wallet</h2>
-  <select name="wallet" id="walletSelect"></select><br>
-  <h2>Send</h2>
-  <br><label for="content">Content:</label>
-  <div><textarea placeholder="content..." id="content"></textarea></div>
-  <br><label for="contractors">Contractors:</label><input type="text" id="contractors" placeholder='["0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"]'></input>
-  <br><br><button id="send" onclick="createContract()">Create Contract</button>
-  <br><br>
-  <span id="status"></span>
 </body>
 </html>
