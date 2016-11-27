@@ -153,7 +153,7 @@ contract Kontract {
       outJson = strConcat(outJson, '"', addressToString(x), '", ');
     }
     address last_x = arr[arr.length -1];
-    outJson = strConcat(outJson, '"', addressToString(x), '"]');
+    outJson = strConcat(outJson, '"', addressToString(last_x), '"]');
     return outJson;
   }
 
