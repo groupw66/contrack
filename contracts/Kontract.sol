@@ -116,6 +116,9 @@ contract Kontract {
   }
 
   function getMyContracts() returns (string) {
+    if (kontractsByAddress[msg.sender].length == 0) {
+      return "[]";
+    }
     string memory outJson = "[";
     var myContracts = kontractsByAddress[msg.sender];
     for (uint idx=0 ; idx < myContracts.length - 1 ; idx++) {
